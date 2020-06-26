@@ -2,9 +2,9 @@ package main
 
 import (
 	"github.com/danil-lashin/twitter-rewards/config"
-	"github.com/danil-lashin/twitter-rewards/db"
 	"github.com/danil-lashin/twitter-rewards/minter"
 	"github.com/danil-lashin/twitter-rewards/push"
+	"github.com/danil-lashin/twitter-rewards/storage"
 	"net/http"
 	"time"
 
@@ -21,7 +21,7 @@ import (
 
 func main() {
 	cfg := config.ParseConfig("config.json")
-	storage := db.NewDB(cfg)
+	store := storage.NewDB(cfg)
 	minterService := minter.NewService(cfg)
 	minterPush := push.NewMinterPush(cfg)
 
@@ -33,6 +33,7 @@ func main() {
 	}
 
 	router := gin.Default()
+	router.Use(gin.Recovery())
 	router.LoadHTMLGlob("templates/*")
 	router.GET("/callback", func(c *gin.Context) {
 		user, err := gothic.CompleteUserAuth(c.Writer, c.Request)
@@ -63,7 +64,7 @@ func main() {
 			return
 		}
 
-		oauthCfg := oauth1.NewConfig(cfg.TwitterKey, cfg.TwitterKey)
+		oauthCfg := oauth1.NewConfig(cfg.TwitterKey, cfg.TwitterSecret)
 		token := oauth1.NewToken(user.AccessToken, user.AccessTokenSecret)
 		httpClient := oauthCfg.Client(oauth1.NoContext, token)
 
@@ -87,7 +88,7 @@ func main() {
 			return
 		}
 
-		if storage.IsUserExists(user.UserID) {
+		if store.IsUserExists(user.UserID) {
 			c.JSON(http.StatusBadRequest, gin.H{
 				"account": false,
 				"rules":   false,
@@ -97,7 +98,7 @@ func main() {
 			return
 		}
 
-		if err := storage.AddUser(user.UserID); err != nil {
+		if err := store.AddUser(user.UserID); err != nil {
 			c.JSON(http.StatusInternalServerError, gin.H{
 				"account": false,
 				"rules":   false,
