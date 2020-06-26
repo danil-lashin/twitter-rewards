@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+          integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous">
+
+    <title>Rewards by Minter</title>
+
+    <style>
+        .active {
+            display: block !important;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+    </style>
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="container">
+        <a class="navbar-brand" href="/">
+            <img src="https://minter.org/img/minter-logo-circle.svg" width="30" height="30" class="d-inline-block align-top" alt="" loading="lazy">
+            Rewards by Minter
+        </a>
+    </div>
+</nav>
+
+<div class="container hidden" style="margin-top: 20px;" v-bind:class="{active: loaded}" id="app">
+    <ul class="list-group" style="max-width: 400px">
+        <li class="list-group-item d-flex justify-content-between align-items-center">Logging in
+            <svg v-show="loggedIn == 'fail'" class="bi bi-x-circle-fill" width="1em" height="1em" viewBox="0 0 16 16"
+                 fill="red" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.146-3.146a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/>
+            </svg>
+            <div v-show="loggedIn == 'loading'" class="spinner-border text-primary spinner-border-sm" role="status">
+                <span class="sr-only">Loading...</span></div>
+            <svg v-show="loggedIn == 'done'" class="bi bi-check-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">Checking account
+            <svg v-show="checkedAccount == 'fail'" class="bi bi-x-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="red" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.146-3.146a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/>
+            </svg>
+            <div v-show="checkedAccount == 'loading'" class="spinner-border text-primary spinner-border-sm"
+                 role="status"><span class="sr-only">Loading...</span></div>
+            <svg v-show="checkedAccount == 'done'" class="bi bi-check-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">Checking rules
+            <svg v-show="checkedRules == 'done'" class="bi bi-check-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+            <svg v-show="checkedRules == 'fail'" class="bi bi-x-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="red" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-4.146-3.146a.5.5 0 0 0-.708-.708L8 7.293 4.854 4.146a.5.5 0 1 0-.708.708L7.293 8l-3.147 3.146a.5.5 0 0 0 .708.708L8 8.707l3.146 3.147a.5.5 0 0 0 .708-.708L8.707 8l3.147-3.146z"/>
+            </svg>
+            <div v-show="checkedRules == 'loading'" class="spinner-border text-primary spinner-border-sm"
+                 role="status"><span class="sr-only">Loading...</span></div>
+        </li>
+        <li class="list-group-item d-flex justify-content-between align-items-center">Preparing reward
+            <div v-show="preparedReward == 'loading'" class="spinner-border text-primary spinner-border-sm"
+                 role="status"><span class="sr-only">Loading...</span></div>
+            <svg v-show="preparedReward == 'done'" class="bi bi-check-circle-fill" width="1em" height="1em"
+                 viewBox="0 0 16 16" fill="green" xmlns="http://www.w3.org/2000/svg">
+                <path fill-rule="evenodd"
+                      d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zm-3.97-3.03a.75.75 0 0 0-1.08.022L7.477 9.417 5.384 7.323a.75.75 0 0 0-1.06 1.06L6.97 11.03a.75.75 0 0 0 1.079-.02l3.992-4.99a.75.75 0 0 0-.01-1.05z"/>
+            </svg>
+        </li>
+    </ul>
+
+    <div style="margin-top: 20px">Powered by <a target="_blank" href="http://minter.network/"><img style="width: 60px;vertical-align: top;" src="https://minterpush.com/static/media/minter-logo-grey.9d1d12fb.svg" alt=""></a></div>
+</div>
+
+<!-- Optional JavaScript -->
+<!-- jQuery first, then Popper.js, then Bootstrap JS -->
+<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+        integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+        integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+        crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script>
+    function checkPush(id, address, v) {
+        axios.get("https://api.minter.one/address?address=" + address).then((response) => {
+            if (response.data.result.balance["LASHIN"] > 0) {
+                v.preparedReward = "done"
+                setTimeout(() => {
+                    location.href = "https://push.mn/" + id
+                }, 1500)
+            } else {
+                setTimeout(() => {
+                    checkPush(id, address, v)
+                }, 1000)
+            }
+        })
+    }
+
+    new Vue({
+        el: '#app',
+        data: {
+            loaded: true,
+            loggedIn: "loading",
+            checkedAccount: "",
+            checkedRules: "",
+            preparedReward: "",
+        },
+        mounted() {
+            if (location.search.includes("oauth_token")) {
+                this.loggedIn = "done"
+                this.checkedAccount = "loading"
+                this.checkedRules = "loading"
+
+                axios.get('/callback' + location.search)
+                    .then((response) => {
+                        this.checkedAccount = "done"
+                        this.checkedRules = "done"
+                        this.preparedReward = "loading"
+
+                        checkPush(response.data.id, response.data.address, this)
+                    })
+                    .catch((error) => {
+                        if (error.response.data.account) {
+                            this.checkedAccount = "done"
+
+                            if (!error.response.data.rules) {
+                                swal({
+                                    title: "Conditions are not met",
+                                    text: "Like and retweet post before requesting the reward",
+                                    icon: "error",
+                                    button: "Go to tweet"
+                                }).then((t) => {
+                                    if (!t) {
+                                        return
+                                    }
+                                    location.href = 'https://twitter.com/statuses/{{ .tweet_id }}'
+                                });
+                                this.checkedRules = "fail"
+                            }
+                        } else {
+                            if (error.response.data.account === false) {
+                                this.checkedAccount = "fail"
+                                this.checkedRules = ""
+                            } else {
+                                location.href = '/'
+                            }
+                        }
+
+                        if (error.response.data.error) {
+                            swal("Error", error.response.data.error, "error");
+                        }
+                    })
+            } else if (location.search.includes("denied")) {
+                this.loggedIn = "fail"
+            } else {
+                window.setTimeout(function () {
+                    location.href = '/login'
+                }, 1000)
+            }
+        }
+    })
+</script>
+</body>
+</html>
