@@ -3,8 +3,7 @@
   "twitter_secret": "",
   "twitter_callback": "https://twitter.lashin.io/callback",
 
-  "minter_private_key": "b082b0ec8d26bb109a0270e90f97f9324e8fa474725b973c24e12c599d76da43",
-  "minter_master_address": "Mxe219a799ac2910d3de2a33e432cee5f6a57fbf41",
+  "minter_mnemonic": "spider velvet genius ethics coconut drink boy butter library cook diet face",
   "minter_node_url": "https://api.minter.one/",
   "minter_push_bearer": "",
 
