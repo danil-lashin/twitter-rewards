@@ -10,10 +10,9 @@ type Config struct {
 	TwitterSecret   string `json:"twitter_secret"`
 	TwitterCallback string `json:"twitter_callback"`
 
-	MinterPrivateKey    string `json:"minter_private_key"`
-	MinterMasterAddress string `json:"minter_master_address"`
-	MinterNodeUrl       string `json:"minter_node_url"`
-	MinterPushBearer    string `json:"minter_push_bearer"`
+	MinterMnemonic   string `json:"minter_mnemonic"`
+	MinterNodeUrl    string `json:"minter_node_url"`
+	MinterPushBearer string `json:"minter_push_bearer"`
 
 	Coin   string `json:"coin"`
 	Amount string `json:"amount"`

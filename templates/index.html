@@ -108,7 +108,7 @@
 <script>
     function checkPush(id, address, v) {
         axios.get("https://api.minter.one/address?address=" + address).then((response) => {
-            if (response.data.result.balance["LASHIN"] > 0) {
+            if (response.data.result.balance["{{ .coin }}"] > 0) {
                 v.preparedReward = "done"
                 setTimeout(() => {
                     location.href = "https://push.mn/" + id

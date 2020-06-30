@@ -3,6 +3,7 @@ package minter
 import (
 	"github.com/MinterTeam/minter-go-sdk/api"
 	"github.com/MinterTeam/minter-go-sdk/transaction"
+	"github.com/MinterTeam/minter-go-sdk/wallet"
 	"github.com/danil-lashin/twitter-rewards/config"
 	"github.com/danil-lashin/twitter-rewards/helpers"
 	"math/big"
@@ -27,9 +28,14 @@ type SendJob struct {
 func NewService(cfg *config.Config) *Service {
 	value, _ := big.NewInt(0).SetString(cfg.Amount, 10)
 
+	seed, _ := wallet.Seed(cfg.MinterMnemonic)
+	privateKey, _ := wallet.PrivateKeyBySeed(seed)
+	publicKey, _ := wallet.PublicKeyByPrivateKey(privateKey)
+	address, _ := wallet.AddressByPublicKey(publicKey)
+
 	service := &Service{
-		masterAddress: cfg.MinterMasterAddress,
-		privateKey:    cfg.MinterPrivateKey,
+		masterAddress: address,
+		privateKey:    privateKey,
 		coin:          cfg.Coin,
 		value:         value,
 		client:        api.NewApi(cfg.MinterNodeUrl),
